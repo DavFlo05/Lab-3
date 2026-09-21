@@ -36,17 +36,70 @@ public class EnemyOrbit : MonoBehaviour
             radiusDifference *
             radiusCorrection;
 
-        // Combine movement
+        // Movement
         Vector3 movement =
             tangent + correction;
 
         movement =
             movement.normalized;
 
-        // Move
         transform.position +=
             movement *
             orbitSpeed *
             Time.deltaTime;
+
+        // Face player
+        FacePlayer();
+    }
+
+    void FacePlayer()
+    {
+        // Enemy to player
+        Vector3 direction =
+            player.position - transform.position;
+
+        direction =
+            direction.normalized;
+
+        Vector3 facing =
+            Vector3.up;
+
+        // Get angle
+        float dot =
+            Vector3.Dot(
+                facing,
+                direction
+            );
+
+        dot =
+            Mathf.Clamp(
+                dot,
+                -1f,
+                1f
+            );
+
+        float angle =
+            Mathf.Acos(dot) *
+            Mathf.Rad2Deg;
+
+        // Get rotation direction
+        Vector3 cross =
+            Vector3.Cross(
+                facing,
+                direction
+            );
+
+        if (cross.z < 0)
+        {
+            angle = -angle;
+        }
+
+        // Rotate
+        transform.rotation =
+            Quaternion.Euler(
+                0f,
+                0f,
+                angle
+            );
     }
 }
