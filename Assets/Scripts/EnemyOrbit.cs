@@ -5,6 +5,8 @@ public class EnemyOrbit : MonoBehaviour
     public Transform player;
 
     public float orbitSpeed = 2f;
+    public float orbitRadius = 5f;
+    public float radiusCorrection = 2f;
 
     void Update()
     {
@@ -12,16 +14,38 @@ public class EnemyOrbit : MonoBehaviour
         Vector3 radial =
             transform.position - player.position;
 
+        Vector3 radialDirection =
+            radial.normalized;
+
         // Orbit direction
         Vector3 tangent =
             Vector3.Cross(
                 Vector3.forward,
-                radial
+                radialDirection
             ).normalized;
+
+        // Radius correction
+        float distance =
+            radial.magnitude;
+
+        float radiusDifference =
+            distance - orbitRadius;
+
+        Vector3 correction =
+            -radialDirection *
+            radiusDifference *
+            radiusCorrection;
+
+        // Combine movement
+        Vector3 movement =
+            tangent + correction;
+
+        movement =
+            movement.normalized;
 
         // Move
         transform.position +=
-            tangent *
+            movement *
             orbitSpeed *
             Time.deltaTime;
     }
